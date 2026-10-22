@@ -25,3 +25,18 @@ class DenseEncoder(nn.Module):
         x3 = self.conv3(torch.cat([x1, x2, bits], dim=1))
         residuo = self.conv4(torch.cat([x1, x2, x3, bits], dim=1))
         return imagem + residuo
+
+class DenseDecoder(nn.Module):
+
+    def __init__(self, data_depth, hidden_size=32):
+        super().__init__()
+        self.conv1 = bloco_conv(3, hidden_size)
+        self.conv2 = bloco_conv(hidden_size, hidden_size)
+        self.conv3 = bloco_conv(2 * hidden_size, hidden_size)
+        self.conv4 = nn.Conv2d(3 * hidden_size, data_depth, kernel_size=3, padding=1)
+
+    def forward(self, stego):
+        x1 = self.conv1(stego)
+        x2 = self.conv2(x1)
+        x3 = self.conv3(torch.cat([x1, x2], dim=1))
+        return self.conv4(torch.cat([x1, x2, x3], dim=1))
