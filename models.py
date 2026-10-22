@@ -40,3 +40,17 @@ class DenseDecoder(nn.Module):
         x2 = self.conv2(x1)
         x3 = self.conv3(torch.cat([x1, x2], dim=1))
         return self.conv4(torch.cat([x1, x2, x3], dim=1))
+
+class BasicCritic(nn.Module):
+     def __init__(self, hidden_size=32):
+        super().__init__()
+        self.layers = nn.Sequential(
+            bloco_conv(3, hidden_size),
+            bloco_conv(hidden_size, hidden_size),
+            bloco_conv(hidden_size, hidden_size),
+            nn.Conv2d(hidden_size, 1, kernel_size=3, padding=1),
+        )
+
+        def forward(self, imagem):
+        x = self.layers(imagem)
+        return x.mean(dim=(1, 2, 3))
